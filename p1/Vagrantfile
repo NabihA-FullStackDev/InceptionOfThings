@@ -1,6 +1,5 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "debian/bookworm64"
-
     config.vm.provider "virtualbox" do |v|
         v.memory = 512
         v.cpus = 1
@@ -11,6 +10,8 @@ Vagrant.configure("2") do |config|
         server.vm.hostname = "nameS"
         server.vm.network "private_network", ip: "192.168.56.110"
         server.vm.provision "shell", inline: <<-SHELL
+            sudo apt update -y
+            sudo apt install -y curl
             curl -sfL https://get.k3s.io | sh -
             mkdir -p /home/vagrant/.kube
             sudo cp /etc/rancher/k3s/k3s.yaml /home/vagrant/.kube/config
@@ -23,6 +24,8 @@ Vagrant.configure("2") do |config|
         worker.vm.hostname = "nameSW"
         worker.vm.network "private_network", ip: "192.168.56.111"
         worker.vm.provision "shell", inline: <<-SHELL
+            sudo apt update -y
+            sudo apt install -y curl
             TOKEN=$(ssh -o StrictHostKeyChecking=no vagrant@192.168.56.110 "sudo cat /var/lib/rancher/k3s/server/node-token")
             curl -sfL https://get.k3s.io | K3S_URL=https://192.168.56.110:6443 K3S_TOKEN=$TOKEN sh -
         SHELL
