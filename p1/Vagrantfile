@@ -1,17 +1,13 @@
 Vagrant.configure("2") do |config|
-    # Utiliser Debian Bookworm 64 bits
     config.vm.box = "debian/bookworm64"
-  
-    # Supprimer cette ligne pour laisser Vagrant gérer les clés SSH
-    # config.ssh.insert_key = false
   
     # Machine Serveur
     config.vm.define "server" do |server|
-      server.vm.hostname = "loginS"
+      server.vm.hostname = "naaliS"
       server.vm.network "private_network", ip: "192.168.56.110"
   
       server.vm.provider "virtualbox" do |vb|
-        vb.name = "loginS"
+        vb.name = "naaliS"
         vb.cpus = 1
         vb.memory = 1024
       end
@@ -20,32 +16,24 @@ Vagrant.configure("2") do |config|
         #!/bin/bash
         set -e
         export DEBIAN_FRONTEND=noninteractive
-  
-        # Mettre à jour les paquets
         apt-get update
-  
-        # Installer les dépendances
         apt-get install -y curl
-  
-        # Installer K3s en mode serveur
         curl -sfL https://get.k3s.io | sh -
   
-        # Copier le node-token pour le nœud agent
         mkdir -p /vagrant/shared
         cp /var/lib/rancher/k3s/server/node-token /vagrant/shared/node-token
   
-        # Configurer kubectl (K3s fournit déjà kubectl)
         ln -s /usr/local/bin/k3s /usr/local/bin/kubectl || true
       SHELL
     end
   
     # Machine Worker
     config.vm.define "worker" do |worker|
-      worker.vm.hostname = "loginSW"
+      worker.vm.hostname = "naaliSW"
       worker.vm.network "private_network", ip: "192.168.56.111"
   
       worker.vm.provider "virtualbox" do |vb|
-        vb.name = "loginSW"
+        vb.name = "naaliSW"
         vb.cpus = 1
         vb.memory = 1024
       end
@@ -55,24 +43,17 @@ Vagrant.configure("2") do |config|
         set -e
         export DEBIAN_FRONTEND=noninteractive
   
-        # Attendre que le node-token soit disponible
         while [ ! -f /vagrant/shared/node-token ]; do
           sleep 2
         done
   
-        # Lire le node-token
         NODE_TOKEN=$(cat /vagrant/shared/node-token)
   
-        # Mettre à jour les paquets
         apt-get update
-  
-        # Installer les dépendances
         apt-get install -y curl
   
-        # Installer K3s en mode agent
         K3S_URL="https://192.168.56.110:6443" K3S_TOKEN=$NODE_TOKEN sh -c 'curl -sfL https://get.k3s.io | sh -'
   
-        # Configurer kubectl (K3s fournit déjà kubectl)
         ln -s /usr/local/bin/k3s /usr/local/bin/kubectl || true
       SHELL
     end
