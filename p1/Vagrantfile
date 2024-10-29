@@ -1,26 +1,32 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "debian/bookworm64"
+
     config.vm.provider "virtualbox" do |v|
         v.memory = 512
         v.cpus = 1
     end
   
-    config.vm.define "naaliS" do |server|
-        server.vm.hostname = "naaliS"
+    # Machine 1 : Serveur principal
+    config.vm.define "nameS" do |server|
+        server.vm.hostname = "nameS"
         server.vm.network "private_network", ip: "192.168.56.110"
+
         server.vm.provision "shell", inline: <<-SHELL
             curl -sfL https://get.k3s.io | sh -
+            mkdir -p /home/vagrant/.kube
             sudo cp /etc/rancher/k3s/k3s.yaml /home/vagrant/.kube/config
-            sudo chown vagrant:vagrant /home/vagrant/.kube/config
+            sudo chown -R vagrant:vagrant /home/vagrant/.kube
         SHELL
     end
 
-    config.vm.define "naaliSW" do |worker|
-        worker.vm.hostname = "naaliSW"
+    # Machine 2 : Serveur de travail (agent K3s)
+    config.vm.define "nameSW" do |worker|
+        worker.vm.hostname = "nameSW"
         worker.vm.network "private_network", ip: "192.168.56.111"
+
         worker.vm.provision "shell", inline: <<-SHELL
-            curl -sfL https://get.k3s.io | K3S_URL=https://192.168.56.110:6443 K3S_TOKEN=$(cat /var/lib/rancher/k3s/server/node-token) sh -
+            K3S_TOKEN=$(ssh vagrant@192.168.56.110 "sudo cat /var/lib/rancher/k3s/server/node-token")
+            curl -sfL https://get.k3s.io | K3S_URL=https://192.168.56.110:6443 K3S_TOKEN=$K3S_TOKEN sh -
         SHELL
     end
-
 end
