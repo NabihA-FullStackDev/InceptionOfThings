@@ -33,7 +33,6 @@ Vagrant.configure("2") do |config|
         kubectl apply -f /vagrant/app3/deployment-app3.yaml
         kubectl apply -f /vagrant/app3/service-app3.yaml
   
-        # Installation de l'Ingress Controller NGINX sans webhook d'admission
         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
         kubectl patch deployment ingress-nginx-controller -n ingress-nginx --type=json \
           -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/args/1"}]'
