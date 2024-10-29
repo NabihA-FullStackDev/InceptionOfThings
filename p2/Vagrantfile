@@ -1,0 +1,56 @@
+Vagrant.configure("2") do |config|
+    config.vm.box = "debian/bookworm64"
+    config.vm.define "server" do |server|
+      server.vm.hostname = "jucapikS"
+      server.vm.network "private_network", ip: "192.168.56.110"
+      
+      server.vm.provider "virtualbox" do |vb|
+        vb.name = "jucapikS"
+        vb.cpus = 1
+        vb.memory = 1024
+      end
+  
+      server.vm.provision "shell", inline: <<-SHELL
+        #!/bin/bash
+        set -e
+        export DEBIAN_FRONTEND=noninteractive
+  
+        apt-get update
+        apt-get install -y curl
+        apt-get install -y docker.io
+        systemctl start docker
+        systemctl enable docker
+  
+        curl -sfL https://get.k3s.io | sh -
+  
+        ln -s /usr/local/bin/k3s /usr/local/bin/kubectl || true
+  
+        cd /vagrant/app1
+        docker build -t app1:latest .
+        cd /vagrant/app2
+        docker build -t app2:latest .
+        cd /vagrant/app3
+        docker build -t app3:latest .
+  
+        k3s ctr images import /var/lib/docker/image/overlay2/imagedb/content/sha256/*
+  
+        kubectl apply -f /vagrant/app1/deployment-app1.yaml
+        kubectl apply -f /vagrant/app1/service-app1.yaml
+        kubectl apply -f /vagrant/app2/deployment-app2.yaml
+        kubectl apply -f /vagrant/app2/service-app2.yaml
+        kubectl apply -f /vagrant/app3/deployment-app3.yaml
+        kubectl apply -f /vagrant/app3/service-app3.yaml
+  
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.1/deploy/static/provider/cloud/deploy.yaml
+  
+        echo "Attente que l'Ingress Controller soit prêt..."
+        kubectl wait --namespace ingress-nginx \
+          --for=condition=ready pod \
+          --selector=app.kubernetes.io/component=controller \
+          --timeout=120s
+  
+        kubectl apply -f /vagrant/ingress.yaml
+      SHELL
+    end
+  end
+  
