@@ -3,7 +3,8 @@ Vagrant.configure("2") do |config|
   
     config.vm.define "server" do |server|
       server.vm.hostname = "jucapikS"
-      server.vm.network "private_network", ip: "192.168.56.110"
+      
+      server.vm.network "private_network", ip: "192.168.56.110", virtualbox__intnet: true
   
       server.vm.provider "virtualbox" do |vb|
         vb.name = "jucapikS"
@@ -16,6 +17,7 @@ Vagrant.configure("2") do |config|
         apt-get install -y curl docker.io
         systemctl start docker
         systemctl enable docker
+  
         curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--docker" sh -
         ln -s /usr/local/bin/k3s /usr/local/bin/kubectl || true
   
@@ -37,7 +39,6 @@ Vagrant.configure("2") do |config|
         kubectl patch deployment ingress-nginx-controller -n ingress-nginx --type=json \
           -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/args/1"}]'
   
-        echo "Attente que le contrôleur Ingress soit prêt..."
         while [[ $(kubectl get pods -n ingress-nginx -l app.kubernetes.io/component=controller -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
           sleep 5
         done
