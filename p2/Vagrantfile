@@ -18,7 +18,6 @@ Vagrant.configure("2") do |config|
         systemctl enable --now docker
   
         curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--docker" sh -
-  
         ln -s /usr/local/bin/k3s /usr/local/bin/kubectl || true
   
         for app in app1 app2 app3; do
@@ -35,10 +34,6 @@ Vagrant.configure("2") do |config|
   
         kubectl patch deployment ingress-nginx-controller -n ingress-nginx --type='json' \
           -p='[{"op":"add","path":"/spec/template/spec/hostNetwork","value":true}]'
-  
-        while [[ $(kubectl get pods -n ingress-nginx -l app.kubernetes.io/component=controller -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
-          sleep 5
-        done
   
         kubectl apply -f /vagrant/ingress.yaml
       SHELL
