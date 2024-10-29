@@ -7,11 +7,11 @@ Vagrant.configure("2") do |config|
   
     # Machine Serveur
     config.vm.define "server" do |server|
-      server.vm.hostname = "votreloginS" # Remplacez 'votrelogin' par votre login
+      server.vm.hostname = "loginS"
       server.vm.network "private_network", ip: "192.168.56.110"
   
       server.vm.provider "virtualbox" do |vb|
-        vb.name = "votreloginS"
+        vb.name = "loginS"
         vb.cpus = 1
         vb.memory = 1024
       end
@@ -41,11 +41,11 @@ Vagrant.configure("2") do |config|
   
     # Machine Worker
     config.vm.define "worker" do |worker|
-      worker.vm.hostname = "votreloginSW" # Remplacez 'votrelogin' par votre login
+      worker.vm.hostname = "loginSW"
       worker.vm.network "private_network", ip: "192.168.56.111"
   
       worker.vm.provider "virtualbox" do |vb|
-        vb.name = "votreloginSW"
+        vb.name = "loginSW"
         vb.cpus = 1
         vb.memory = 1024
       end
