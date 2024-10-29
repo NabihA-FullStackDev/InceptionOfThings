@@ -32,11 +32,12 @@ Vagrant.configure("2") do |config|
   
         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
   
-        kubectl patch deployment ingress-nginx-controller -n ingress-nginx --type='json' \
-          -p='[{"op":"add","path":"/spec/template/spec/hostNetwork","value":true}]'
-  
-        kubectl patch validatingwebhookconfiguration ingress-nginx-admission -n ingress-nginx \
-          --type='json' -p='[{"op": "remove", "path": "/webhooks"}]'
+        kubectl patch svc ingress-nginx-controller -n ingress-nginx --type='json' \
+          -p='[
+            {"op": "replace", "path": "/spec/type", "value": "NodePort"},
+            {"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30080},
+            {"op": "replace", "path": "/spec/ports/1/nodePort", "value": 30443}
+          ]'
   
         kubectl apply -f /vagrant/ingress.yaml
       SHELL
