@@ -1,5 +1,6 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "debian/bookworm64"
+  
     config.vm.define "server" do |server|
       server.vm.hostname = "jucapikS"
       server.vm.network "private_network", ip: "192.168.56.110"
@@ -21,7 +22,7 @@ Vagrant.configure("2") do |config|
         systemctl start docker
         systemctl enable docker
   
-        curl -sfL https://get.k3s.io | sh -
+        curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--docker" sh -
   
         ln -s /usr/local/bin/k3s /usr/local/bin/kubectl || true
   
@@ -31,8 +32,6 @@ Vagrant.configure("2") do |config|
         docker build -t app2:latest .
         cd /vagrant/app3
         docker build -t app3:latest .
-  
-        k3s ctr images import /var/lib/docker/image/overlay2/imagedb/content/sha256/*
   
         kubectl apply -f /vagrant/app1/deployment-app1.yaml
         kubectl apply -f /vagrant/app1/service-app1.yaml
