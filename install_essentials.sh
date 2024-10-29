@@ -24,9 +24,6 @@ if ! command -v curl &>/dev/null; then
     sudo apt install -y curl
 fi
 
-if ! command -v git &>/dev/null; then
-    sudo apt install -y git
-fi
 
 sudo apt autoremove -y
 sudo apt clean
