@@ -1,6 +1,6 @@
 #!/bin/bash
 sudo apt-get update -y
-sudo apt-get install -y curl gnupg lsb-release apt-transport-https ca-certificates openssh-client
+sudo apt-get install -y curl gnupg lsb-release apt-transport-https ca-certificates openssh-client sshpass
 
 sudo swapoff -a
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
