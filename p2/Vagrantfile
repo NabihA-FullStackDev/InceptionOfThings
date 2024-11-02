@@ -8,9 +8,5 @@ Vagrant.configure("2") do |config|
     vb.cpus = 2
   end
 
-  config.vm.provision "file", source: "./docker/app1/app1.tar", destination: "/home/vagrant/app1.tar"
-  config.vm.provision "file", source: "./docker/app2/app2.tar", destination: "/home/vagrant/app2.tar"
-  config.vm.provision "file", source: "./docker/app3/app3.tar", destination: "/home/vagrant/app3.tar"
-
   config.vm.provision "shell", path: "./scripts/setup.sh"
 end

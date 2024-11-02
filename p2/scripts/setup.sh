@@ -12,14 +12,17 @@ sudo systemctl enable docker
 sudo systemctl start docker
 
 echo "Chargement des images locales dans containerd..."
-sudo k3s ctr images import /vagrant/app1.tar
-sudo k3s ctr images import /vagrant/app2.tar
-sudo k3s ctr images import /vagrant/app3.tar
+sudo k3s ctr images import /vagrant/docker/app1/app1.tar
+sudo k3s ctr images import /vagrant/docker/app2/app2.tar
+sudo k3s ctr images import /vagrant/docker/app3/app3.tar
 
 echo "Déploiement des applications et de l'Ingress..."
-kubectl apply -f /vagrant/confs/app1.yaml
-kubectl apply -f /vagrant/confs/app2.yaml
-kubectl apply -f /vagrant/confs/app3.yaml
+kubectl apply -f /vagrant/confs/deploiements/app1_dep.yaml
+kubectl apply -f /vagrant/confs/deploiements/app2_dep.yaml
+kubectl apply -f /vagrant/confs/deploiements/app3_dep.yaml
+kubectl apply -f /vagrant/confs/services/app1_svc.yaml
+kubectl apply -f /vagrant/confs/services/app2_svc.yaml
+kubectl apply -f /vagrant/confs/services/app3_svc.yaml
 kubectl apply -f /vagrant/confs/ingress.yaml
 
 echo "Déploiement terminé."
