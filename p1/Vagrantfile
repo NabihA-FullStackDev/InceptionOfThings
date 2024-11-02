@@ -12,19 +12,7 @@ Vagrant.configure("2") do |config|
         vb.memory = 1024
       end
   
-      server.vm.provision "shell", inline: <<-SHELL
-        #!/bin/bash
-        set -e
-        export DEBIAN_FRONTEND=noninteractive
-        apt-get update
-        apt-get install -y curl
-        curl -sfL https://get.k3s.io | sh -
-  
-        mkdir -p /vagrant/shared
-        cp /var/lib/rancher/k3s/server/node-token /vagrant/shared/node-token
-  
-        ln -s /usr/local/bin/k3s /usr/local/bin/kubectl || true
-      SHELL
+      server.vm.provision "shell", path: "./scripts/setup_server.sh"
     end
   
     # Machine Worker
@@ -38,24 +26,7 @@ Vagrant.configure("2") do |config|
         vb.memory = 1024
       end
   
-      worker.vm.provision "shell", inline: <<-SHELL
-        #!/bin/bash
-        set -e
-        export DEBIAN_FRONTEND=noninteractive
-  
-        while [ ! -f /vagrant/shared/node-token ]; do
-          sleep 2
-        done
-  
-        NODE_TOKEN=$(cat /vagrant/shared/node-token)
-  
-        apt-get update
-        apt-get install -y curl
-  
-        K3S_URL="https://192.168.56.110:6443" K3S_TOKEN=$NODE_TOKEN sh -c 'curl -sfL https://get.k3s.io | sh -'
-  
-        ln -s /usr/local/bin/k3s /usr/local/bin/kubectl || true
-      SHELL
+      worker.vm.provision "shell", path: "./scripts/setup_worker.sh"
     end
   end
   
