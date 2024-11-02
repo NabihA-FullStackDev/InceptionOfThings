@@ -6,3 +6,4 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode 644 --f
 
 mkdir -p /vagrant/shared
 sudo cp /var/lib/rancher/k3s/server/node-token /vagrant/shared/
+sudo chmod 644 /vagrant/shared/node-token
