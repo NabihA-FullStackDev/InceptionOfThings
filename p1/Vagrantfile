@@ -1,32 +1,31 @@
 Vagrant.configure("2") do |config|
-    config.vm.box = "debian/bookworm64"
-  
-    # Machine Serveur
-    config.vm.define "server" do |server|
-      server.vm.hostname = "naaliS"
-      server.vm.network "private_network", ip: "192.168.56.110"
-  
-      server.vm.provider "virtualbox" do |vb|
-        vb.name = "naaliS"
-        vb.cpus = 1
-        vb.memory = 1024
-      end
-  
-      server.vm.provision "shell", path: "./scripts/setup_server.sh"
+
+  config.vm.define "server" do |server|
+    server.vm.box = "debian/bookworm64"
+    server.vm.hostname = "jucapikS"
+    
+    server.vm.network "private_network", ip: "192.168.56.110"
+
+    server.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024"
+      vb.cpus = 1
     end
-  
-    # Machine Worker
-    config.vm.define "worker" do |worker|
-      worker.vm.hostname = "naaliSW"
-      worker.vm.network "private_network", ip: "192.168.56.111"
-  
-      worker.vm.provider "virtualbox" do |vb|
-        vb.name = "naaliSW"
-        vb.cpus = 1
-        vb.memory = 1024
-      end
-  
-      worker.vm.provision "shell", path: "./scripts/setup_worker.sh"
-    end
+
+    server.vm.provision "shell", path: "./scripts/setup_server.sh"
   end
-  
+
+  config.vm.define "worker" do |worker|
+    worker.vm.box = "debian/bookworm64"
+    worker.vm.hostname = "jucapikSW"
+
+    worker.vm.network "private_network", ip: "192.168.56.111"
+
+    worker.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024"
+      vb.cpus = 1
+    end
+
+    worker.vm.provision "shell", path: "./scripts/setup_worker.sh"
+  end
+
+end

@@ -1,11 +1,8 @@
 #!/bin/bash
-set -e
-export DEBIAN_FRONTEND=noninteractive
-apt-get update
-apt-get install -y curl
-curl -sfL https://get.k3s.io | sh -
-  
+sudo apt-get update -y
+sudo apt-get install -y curl
+
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode 644 --flannel-iface=eth1" sh -
+
 mkdir -p /vagrant/shared
-cp /var/lib/rancher/k3s/server/node-token /vagrant/shared/node-token
-  
-ln -s /usr/local/bin/k3s /usr/local/bin/kubectl || true
+sudo cp /var/lib/rancher/k3s/server/node-token /vagrant/shared/
