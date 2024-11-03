@@ -23,3 +23,11 @@ L'une des applications dispose de trois répliques pour simuler une configuratio
 
 Cette partie m'a permis de mieux comprendre comment gérer plusieurs applications dans un même cluster et de pratiquer la gestion des Ingress pour contrôler l’accès aux applications.
 
+## P3 : Déploiement continu avec K3d et Argo CD
+Pour finir, j’ai découvert K3d et configuré un système de déploiement continu avec Argo CD. J’ai installé K3d, qui m’a permis de simuler un cluster Kubernetes avec Docker, et j’ai mis en place un dépôt GitHub pour automatiser les déploiements d’une application. En utilisant deux versions de cette application, j’ai pu configurer Argo CD pour détecter et déployer automatiquement les mises à jour depuis le dépôt Git.
+
+Cela m’a permis d’appréhender les bases de l’intégration continue et de voir comment les mises à jour peuvent être propagées automatiquement dans un environnement Kubernetes.
+
+---
+
+Ce projet m'a donné une bonne introduction aux concepts de Kubernetes, en partant de la configuration de base jusqu'à la mise en place d'un déploiement continu. Chaque étape m'a permis de renforcer mes compétences en administration de systèmes et en gestion d’applications dans un cluster.

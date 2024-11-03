@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jucapik-of-things
+spec:
+  destination:
+    namespace: dev
+    server: https://kubernetes.default.svc
+  source:
+    path: '.'
+    repoURL: https://github.com/NabihA-FullStackDev/jucapik-of-things.git
+    targetRevision: HEAD
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
