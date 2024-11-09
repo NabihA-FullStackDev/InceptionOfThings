@@ -1,12 +1,14 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "debian/bookworm64"
-  config.vm.network "private_network", ip: "192.168.56.110"
-  config.vm.hostname = "loginS"
+  config.vm.define "jucapikS" do |jucapikS| 
+	  jucapikS.vm.box = "debian/bookworm64"
+	  jucapikS.vm.network "private_network", ip: "192.168.56.110"
+	  jucapikS.vm.hostname = "jucapikS"
 
-  config.vm.provider "virtualbox" do |vb|
-    vb.memory = "2048"
-    vb.cpus = 2
+	  jucapikS.vm.provider "virtualbox" do |vb|
+	    vb.memory = "2048"
+	    vb.cpus = 2
+	  end
+	  
+	  jucapikS.vm.provision "shell", path: "./scripts/setup.sh"
   end
-
-  config.vm.provision "shell", path: "./scripts/setup.sh"
 end

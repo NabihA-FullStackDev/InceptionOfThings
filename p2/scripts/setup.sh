@@ -5,7 +5,7 @@ sudo apt-get update -y
 sudo apt-get install -y docker.io curl
 
 echo "Installation de K3s en mode server ........................"
-sudo curl -sfL https://get.k3s.io | sh -
+sudo curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode 644 --flannel-iface=eth1" sh -
 
 echo "Activation de Docker ......................................"
 sudo systemctl enable docker
